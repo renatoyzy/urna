@@ -22,6 +22,8 @@ export default function VotingScreen({
     const [innerElements, setInnerElements] = useState(<></>);
 
     const [voter, setVoter] = useState(undefined);
+    const [candidateVereador, setCandidateVereador] = useState(undefined);
+    const [candidatePrefeito, setCandidatePrefeito] = useState(undefined);
 
     useEffect(() => {
 
@@ -52,7 +54,7 @@ export default function VotingScreen({
                     })();
                 };
 
-                if (input.includes('CONFIRMA') && voter?.matricula) {
+                if (input.includes('CONFIRMA') && voter?.matricula && voter.matricula == input) {
                     setStep(current => current+1);
                     setInput('');
                 } else if (input.includes('CONFIRMA')) {
@@ -63,47 +65,92 @@ export default function VotingScreen({
 
             case Steps.VEREADOR:
                 setInnerElements((<>
-                    <h1>Número do candidato a VEREADOR</h1>
+                    <h1>Número do vereador</h1>
                     {input}
-                </>))
+                    {candidateVereador?.numero && <hl></hl>}
+                    <h2>{candidateVereador?.numero && 'Candidato identificado'}</h2>
+                    {candidateVereador?.nome}
+                    {candidateVereador?.foto && <img src={candidateVereador.foto} width={90} />}
+                    {candidateVereador?.numero && <hl></hl>}
+                    <h2>{candidateVereador?.numero && 'Confirme para votar'}</h2>
+                </>));
 
-                if (input.includes('CONFIRMA')) {
+                if(input.length==4) {
+                    (async() => {
+                        const response = await fetch('/api/get_candidate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ input: input.replace('CONFIRMA', ''), cargo: "vereador" })
+                        });
 
-                    setInput('')
+                        const data = await response?.json().catch(err => {});
+
+                        console.log("Candidato identificado", data);
+                        setCandidateVereador(data);
+                    })();
+                };
+
+                if (input.includes('CONFIRMA') && candidateVereador?.numero && candidateVereador.numero == input) {
                     setStep(current => current+1);
-
-                } else if (input.includes('BRANCO')) {
-
-                    setInput('')
-                    window?.alert(parseInt(input));
-
+                    setInput('');
+                } else if (input.includes('CONFIRMA')) {
+                    setInput(current => current.replace('CONFIRMA', ''));
                 };
 
                 break;
 
             case Steps.PREFEITO:
                 setInnerElements((<>
-                    <h1>Número do candidato a PREFEITO</h1>
+                    <h1>Número do prefeito</h1>
                     {input}
-                </>))
+                    {candidatePrefeito?.numero && <hl></hl>}
+                    <h2>{candidatePrefeito?.numero && 'Candidato identificado'}</h2>
+                    {candidatePrefeito?.nome}
+                    {candidatePrefeito?.foto && <img src={candidatePrefeito.foto} width={90} />}
+                    {candidatePrefeito?.numero && <hl></hl>}
+                    <h2>{candidatePrefeito?.numero && voter?.votou ? 'Este eleitor já votou' : 'Confirme para votar'}</h2>
+                </>));
 
-                if (input.includes('CONFIRMA')) {
+                if(input.length==2) {
+                    (async() => {
+                        const response = await fetch('/api/get_candidate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ input: input.replace('CONFIRMA', ''), cargo: "prefeito" })
+                        });
 
-                    setInput('')
+                        const data = await response?.json().catch(err => {});
+
+                        console.log("Candidato identificado", data);
+                        setCandidatePrefeito(data);
+                    })();
+                };
+
+                if (input.includes('CONFIRMA') && candidatePrefeito?.numero && candidatePrefeito.numero == input && !voter?.votou) {
                     setStep(current => current+1);
 
-                } else if (input.includes('BRANCO')) {
+                    (async() => {
+                        const response = await fetch('/api/post_vote', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prefeito: candidatePrefeito, vereador: candidateVereador, eleitor: voter })
+                        });
 
-                    setInput('')
-                    window?.alert(parseInt(input));
+                        const data = await response?.json().catch(err => {});
 
+                        console.log("Voto registrado", data);
+                    })();
+
+                    setInput('');
+                } else if (input.includes('CONFIRMA')) {
+                    setInput(current => current.replace('CONFIRMA', ''));
                 };
 
                 break;
 
             case Steps.FINALIZADO:
                 setInnerElements((<>
-                    <h1>Voto registrado</h1>
+                    <h1>Voto registrado!</h1>
                     <h3>Recarregando a página para o próximo eleitor...</h3>
                 </>));
                 setTimeout(() => {
@@ -115,7 +162,15 @@ export default function VotingScreen({
                 break;
         }
 
-    }, [input, setInput, setInnerElements, step, setStep, voter, setVoter]);
+    }, [
+        input, 
+        setInput, 
+        setInnerElements, 
+        step, setStep, 
+        voter, setVoter, 
+        candidateVereador, setCandidateVereador, 
+        candidatePrefeito, setCandidatePrefeito
+    ]);
 
     return (
         <div className={styles.screen}>
