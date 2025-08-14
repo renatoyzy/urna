@@ -21,26 +21,44 @@ export default function VotingScreen({
     const [step, setStep] = useState(Steps.MATRICULA);
     const [innerElements, setInnerElements] = useState(<></>);
 
+    const [voter, setVoter] = useState(undefined);
+
     useEffect(() => {
-
-        if (input.includes('CONFIRMA')) {
-
-            setInput('')
-            setStep(current => current+1);
-
-        } else if (input.includes('BRANCO')) {
-
-            setInput('')
-            window?.alert(parseInt(input));
-
-        }
 
         switch (step) {
             case Steps.MATRICULA:
                 setInnerElements((<>
                     <h1>Insira sua matrícula</h1>
                     {input}
-                </>))
+                    <h2>{voter && 'Eleitor identificado'}</h2>
+                    {voter?.nome}
+                    <h2>{voter && 'Confirme novamente para prosseguir'}</h2>
+                </>));
+
+                if (input.includes('CONFIRMA')) {
+                    
+                    if(voter) {
+                        setStep(current => current+1);
+                        setInput('');
+                    } else {
+                        
+                        (async() => {
+                            const response = await fetch('/api/get_voter', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ input: input.replace('CONFIRMA', '') })
+                            });
+
+                            const data = await response?.json();
+
+                            console.log("Eleitor identificado", data);
+                            setVoter(data);
+                        })();
+                        
+                        setInput(current => current.replace('CONFIRMA', ''))
+                    };
+                };
+
                 break;
 
             case Steps.VEREADOR:
@@ -48,6 +66,19 @@ export default function VotingScreen({
                     <h1>Número do candidato a VEREADOR</h1>
                     {input}
                 </>))
+
+                if (input.includes('CONFIRMA')) {
+
+                    setInput('')
+                    setStep(current => current+1);
+
+                } else if (input.includes('BRANCO')) {
+
+                    setInput('')
+                    window?.alert(parseInt(input));
+
+                };
+
                 break;
 
             case Steps.PREFEITO:
@@ -55,6 +86,19 @@ export default function VotingScreen({
                     <h1>Número do candidato a PREFEITO</h1>
                     {input}
                 </>))
+
+                if (input.includes('CONFIRMA')) {
+
+                    setInput('')
+                    setStep(current => current+1);
+
+                } else if (input.includes('BRANCO')) {
+
+                    setInput('')
+                    window?.alert(parseInt(input));
+
+                };
+
                 break;
 
             case Steps.FINALIZADO:
@@ -71,7 +115,7 @@ export default function VotingScreen({
                 break;
         }
 
-    }, [input, setInput, setInnerElements, step, setStep]);
+    }, [input, setInput, setInnerElements, step, setStep, voter, setVoter]);
 
     return (
         <div className={styles.screen}>
