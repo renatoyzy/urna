@@ -1,0 +1,19 @@
+.screen {
+    display: flex;
+    border-radius: 32px;
+    background: black;
+    flex-grow: 1;
+    color: white;
+    padding: 20px;
+
+    .innerScreen {
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        color: black;
+        font-family: monospace;
+    }
+}

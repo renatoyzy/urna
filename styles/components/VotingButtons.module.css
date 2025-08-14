@@ -1,0 +1,27 @@
+.buttons {
+    display: grid;
+    border-radius: 32px;
+    gap: 20px;
+    flex-grow: 1;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 20px;
+    background: rgb(14, 14, 14);
+
+    button {
+        border-radius: 12px;
+        background-color: black;
+        border: 1px solid rgba(255, 255, 255, 0.302);
+        color: white;
+        font-size: xx-large;
+        box-shadow: 8px 8px 8px rgb(0, 0, 0);
+        cursor: pointer;
+        transition-duration: 0.4s;
+        font-family: monospace;
+        text-align: left;
+        padding: 20px;
+    }
+
+    button:hover {
+        scale: 1.01;
+    }
+}
