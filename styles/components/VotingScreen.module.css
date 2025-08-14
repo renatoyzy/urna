@@ -15,5 +15,12 @@
         flex-grow: 1;
         color: black;
         font-family: monospace;
+
+        hl {
+            height: 1px;
+            margin: 9px;
+            background-color: rgb(230, 230, 230);
+            width: 50%;
+        }
     }
 }

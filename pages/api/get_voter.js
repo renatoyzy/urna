@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         return voter ?
             await res.status(200).json({ matricula: voter.matricula, nome: voter.nome })
         : 
-            await res.status(404).json({ found: false });
+            await res.status(404).json(undefined);
 
     } catch (error) {
         await res.status(404).json(error);

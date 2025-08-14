@@ -30,33 +30,33 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Insira sua matrícula</h1>
                     {input}
-                    <h2>{voter && 'Eleitor identificado'}</h2>
+                    {voter?.matricula && <hl></hl>}
+                    <h2>{voter?.matricula && 'Eleitor identificado'}</h2>
                     {voter?.nome}
-                    <h2>{voter && 'Confirme novamente para prosseguir'}</h2>
+                    {voter?.matricula && <hl></hl>}
+                    <h2>{voter?.matricula && 'Confirme para prosseguir'}</h2>
                 </>));
 
-                if (input.includes('CONFIRMA')) {
-                    
-                    if(voter) {
-                        setStep(current => current+1);
-                        setInput('');
-                    } else {
-                        
-                        (async() => {
-                            const response = await fetch('/api/get_voter', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ input: input.replace('CONFIRMA', '') })
-                            });
+                if(input.length>=11) {
+                    (async() => {
+                        const response = await fetch('/api/get_voter', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ input: input.replace('CONFIRMA', '') })
+                        });
 
-                            const data = await response?.json();
+                        const data = await response?.json().catch(err => {});
 
-                            console.log("Eleitor identificado", data);
-                            setVoter(data);
-                        })();
-                        
-                        setInput(current => current.replace('CONFIRMA', ''))
-                    };
+                        console.log("Eleitor identificado", data);
+                        setVoter(data);
+                    })();
+                };
+
+                if (input.includes('CONFIRMA') && voter?.matricula) {
+                    setStep(current => current+1);
+                    setInput('');
+                } else if (input.includes('CONFIRMA')) {
+                    setInput(current => current.replace('CONFIRMA', ''));
                 };
 
                 break;
