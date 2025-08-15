@@ -2,11 +2,12 @@ import styles from "@/styles/components/VotingScreen.module.css";
 import { useEffect, useState } from "react";
 
 const Steps = Object.freeze({
-    MATRICULA: 1,
-    VEREADOR: 2,
-    PREFEITO: 3,
-    AGUARDE: 4,
-    FINALIZADO: 5,
+    APRESENTACAO: 1,
+    MATRICULA: 2,
+    VEREADOR: 3,
+    PREFEITO: 4,
+    AGUARDE: 5,
+    FINALIZADO: 6,
 });
 
 /**
@@ -19,7 +20,7 @@ export default function VotingScreen({
     setInput
 }) {
 
-    const [step, setStep] = useState(Steps.MATRICULA);
+    const [step, setStep] = useState(Steps.APRESENTACAO);
     const [innerElements, setInnerElements] = useState(<></>);
 
     const [voter, setVoter] = useState(undefined);
@@ -29,6 +30,19 @@ export default function VotingScreen({
     useEffect(() => {
 
         switch (step) {
+            case Steps.APRESENTACAO:
+                setInnerElements((<>
+                    <h3>Eleições municipais - Nova DFM</h3>
+                    <img className={styles.logo} src="logo.png" width={90} alt="Logo do Delcides" />
+                    <h1>Seja bem-vindo(a)!</h1>
+                    <h3>Confirme para iniciar o processo.</h3>
+                </>));
+                if (input.includes('CONFIRMA')) {
+                    setInput('');
+                    setStep(current => current+1)
+                }
+                break;
+
             case Steps.MATRICULA:
                 setInnerElements((<>
                     <h1>Insira sua matrícula</h1>

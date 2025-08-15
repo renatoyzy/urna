@@ -29,5 +29,9 @@
             aspect-ratio: 3 / 4;
             object-fit: cover;
         }
+
+        .logo {
+            aspect-ratio: unset;
+        }
     }
 }
