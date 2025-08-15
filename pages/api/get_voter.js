@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         const voter = await client.db('urna').collection('eleitores').findOne({ matricula: parseInt(input) });
 
         return voter ?
-            await res.status(200).json({ matricula: voter.matricula, nome: voter.nome })
+            await res.status(200).json({ matricula: voter.matricula, nome: voter.nome, votou: voter.votou })
         : 
             await res.status(404).json(undefined);
 

@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     try {
         await client.connect();
 
-        const candidate = await client.db('urna').collection(`candidatos_${cargo}`).findOne({ numero: parseInt(input) });
+        const candidate = await client.db('urna').collection('candidatos').findOne({ cargo, numero: parseInt(input) });
 
         return candidate ?
             await res.status(200).json({ numero: candidate.numero, nome: candidate.nome, foto: candidate.foto })

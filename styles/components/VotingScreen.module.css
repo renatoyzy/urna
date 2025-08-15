@@ -16,11 +16,18 @@
         color: black;
         font-family: monospace;
 
-        hl {
+        hr {
             height: 1px;
             margin: 9px;
-            background-color: rgb(230, 230, 230);
+            border-color: rgb(230, 230, 230);
             width: 50%;
+        }
+
+        img {
+            border-radius: 8px;
+            margin: 10px;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
         }
     }
 }

@@ -5,7 +5,8 @@ const Steps = Object.freeze({
     MATRICULA: 1,
     VEREADOR: 2,
     PREFEITO: 3,
-    FINALIZADO: 4,
+    AGUARDE: 4,
+    FINALIZADO: 5,
 });
 
 /**
@@ -32,14 +33,14 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Insira sua matrícula</h1>
                     {input}
-                    {voter?.matricula && <hl></hl>}
+                    {voter?.matricula && <hr></hr>}
                     <h2>{voter?.matricula && 'Eleitor identificado'}</h2>
                     {voter?.nome}
-                    {voter?.matricula && <hl></hl>}
-                    <h2>{voter?.matricula && 'Confirme para prosseguir'}</h2>
+                    {voter?.matricula && <hr></hr>}
+                    <h2>{voter?.matricula && (voter?.votou ? 'Este eleitor já votou' : 'Confirme para prosseguir')}</h2>
                 </>));
 
-                if(input.length>=11) {
+                if(input.length==11 && !voter) {
                     (async() => {
                         const response = await fetch('/api/get_voter', {
                             method: 'POST',
@@ -54,12 +55,16 @@ export default function VotingScreen({
                     })();
                 };
 
-                if (input.includes('CONFIRMA') && voter?.matricula && voter.matricula == input) {
+                if (input.includes('CONFIRMA') && voter?.matricula && parseInt(voter.matricula) == parseInt(input) && !voter?.votou) {
                     setStep(current => current+1);
                     setInput('');
                 } else if (input.includes('CONFIRMA')) {
                     setInput(current => current.replace('CONFIRMA', ''));
-                };
+                } else if (input.includes('BRANCO')) {
+                    setInput(current => current.replace('BRANCO', ''));
+                } else if (input == '') {
+                    setVoter(undefined);
+                }
 
                 break;
 
@@ -67,15 +72,15 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Número do vereador</h1>
                     {input}
-                    {candidateVereador?.numero && <hl></hl>}
+                    {candidateVereador?.numero && <hr></hr>}
                     <h2>{candidateVereador?.numero && 'Candidato identificado'}</h2>
                     {candidateVereador?.nome}
                     {candidateVereador?.foto && <img src={candidateVereador.foto} width={90} />}
-                    {candidateVereador?.numero && <hl></hl>}
+                    {candidateVereador?.numero && <hr></hr>}
                     <h2>{candidateVereador?.numero && 'Confirme para votar'}</h2>
                 </>));
 
-                if(input.length==4) {
+                if(input.length==4 && !candidateVereador) {
                     (async() => {
                         const response = await fetch('/api/get_candidate', {
                             method: 'POST',
@@ -90,12 +95,18 @@ export default function VotingScreen({
                     })();
                 };
 
-                if (input.includes('CONFIRMA') && candidateVereador?.numero && candidateVereador.numero == input) {
+                if (input.includes('CONFIRMA') && candidateVereador?.numero && parseInt(candidateVereador.numero) == parseInt(input) && !voter?.votou) {
                     setStep(current => current+1);
                     setInput('');
                 } else if (input.includes('CONFIRMA')) {
                     setInput(current => current.replace('CONFIRMA', ''));
-                };
+                } else if (input.includes('BRANCO')) {
+                    setCandidateVereador({ nome: 'BRANCO', numero: 0 });
+                    setStep(current => current+1);
+                    setInput('');
+                } else if (input == '') {
+                    setCandidateVereador(undefined);
+                }
 
                 break;
 
@@ -103,15 +114,15 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Número do prefeito</h1>
                     {input}
-                    {candidatePrefeito?.numero && <hl></hl>}
+                    {candidatePrefeito?.numero && <hr></hr>}
                     <h2>{candidatePrefeito?.numero && 'Candidato identificado'}</h2>
                     {candidatePrefeito?.nome}
                     {candidatePrefeito?.foto && <img src={candidatePrefeito.foto} width={90} />}
-                    {candidatePrefeito?.numero && <hl></hl>}
-                    <h2>{candidatePrefeito?.numero && voter?.votou ? 'Este eleitor já votou' : 'Confirme para votar'}</h2>
+                    {candidatePrefeito?.numero && <hr></hr>}
+                    <h2>{candidatePrefeito?.numero && 'Confirme para votar'}</h2>
                 </>));
 
-                if(input.length==2) {
+                if(input.length==2 && !candidatePrefeito) {
                     (async() => {
                         const response = await fetch('/api/get_candidate', {
                             method: 'POST',
@@ -126,26 +137,54 @@ export default function VotingScreen({
                     })();
                 };
 
-                if (input.includes('CONFIRMA') && candidatePrefeito?.numero && candidatePrefeito.numero == input && !voter?.votou) {
-                    setStep(current => current+1);
+                if (input.includes('CONFIRMA') && candidatePrefeito?.numero && parseInt(candidatePrefeito.numero) == parseInt(input) && !voter?.votou) {
+                    setStep(Steps.AGUARDE);
 
                     (async() => {
                         const response = await fetch('/api/post_vote', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prefeito: candidatePrefeito, vereador: candidateVereador, eleitor: voter })
+                            body: JSON.stringify({ prefeito: candidatePrefeito, vereador: candidateVereador, eleitor: voter?.matricula })
                         });
 
                         const data = await response?.json().catch(err => {});
 
                         console.log("Voto registrado", data);
+                        setStep(Steps.FINALIZADO);
                     })();
 
                     setInput('');
                 } else if (input.includes('CONFIRMA')) {
                     setInput(current => current.replace('CONFIRMA', ''));
-                };
+                } else if (input.includes('BRANCO')) {
+                    setCandidatePrefeito({ nome: 'BRANCO', numero: 0 });
+                    setStep(Steps.AGUARDE);
 
+                    (async() => {
+                        const response = await fetch('/api/post_vote', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prefeito: { nome: 'BRANCO', numero: 0 }, vereador: candidateVereador, eleitor: voter?.matricula })
+                        });
+
+                        const data = await response?.json().catch(err => {});
+
+                        console.log("Voto registrado", data);
+                        setStep(Steps.FINALIZADO);
+                    })();
+                    
+                    setInput('');
+                } else if (input == '') {
+                    setCandidatePrefeito(undefined);
+                }
+
+                break;
+
+            case Steps.AGUARDE:
+                setInnerElements((<>
+                    <h1>Processando voto...</h1>
+                    <h3>Aguarde alguns instantes.</h3>
+                </>));
                 break;
 
             case Steps.FINALIZADO:
