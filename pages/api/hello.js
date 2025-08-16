@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-
+/*
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = process.env.MONGODB_URI;
 
@@ -49,9 +49,9 @@ async function run() {
     await client.close();
   }
 }
-
+*/
 
 export default function handler(req, res) {
-  run().catch(console.dir);
+  /*run().catch(console.dir);*/
   res.status(200).json({ name: "John Doe" });
 }

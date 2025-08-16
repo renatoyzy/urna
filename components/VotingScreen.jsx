@@ -52,6 +52,7 @@ export default function VotingScreen({
                     {voter?.matricula && <hr></hr>}
                     <h2>{voter?.matricula && 'Eleitor identificado'}</h2>
                     {voter?.nome}
+                    {voter?.turma && voter?.turno && <span>{voter?.turma + ' ' + String(voter?.turno).toUpperCase()}</span>}
                     {voter?.matricula && <hr></hr>}
                     <h2>{voter?.matricula && (voter?.votou ? 'Este eleitor já votou' : 'Confirme para prosseguir')}</h2>
                 </>));
