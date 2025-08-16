@@ -1,6 +1,6 @@
 # Urna DFM - Eleições Municipais Estudantis
 
-Sistema de votação eletrônica desenvolvido em Next.js para as eleições municipais do projeto "Mova DFM", dos Estudantes de Atitude do CEPI Delcides Ferreira de Morais.
+Sistema de votação eletrônica desenvolvido em Next.js para as eleições municipais do projeto "Nova DFM", dos Estudantes de Atitude do CEPI Delcides Ferreira de Morais.
 
 ## 🏫 Sobre o Projeto
 
