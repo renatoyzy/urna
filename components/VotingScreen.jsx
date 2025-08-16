@@ -1,5 +1,6 @@
 import styles from "@/styles/components/VotingScreen.module.css";
 import { useEffect, useState } from "react";
+import LoadingWheel from "./LoadingWheel";
 
 const Steps = Object.freeze({
     APRESENTACAO: 1,
@@ -47,6 +48,7 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Insira sua matrícula</h1>
                     {input}
+                    {!voter && input.length==11 && (voter === false ? <span>Eleitor não encontrado.</span> : <LoadingWheel />)}
                     {voter?.matricula && <hr></hr>}
                     <h2>{voter?.matricula && 'Eleitor identificado'}</h2>
                     {voter?.nome}
@@ -86,6 +88,7 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Número do vereador</h1>
                     {input}
+                    {!candidateVereador && input.length==4 && (candidateVereador === false ? <span>Candidato não encontrado.</span> : <LoadingWheel />)}
                     {candidateVereador?.numero && <hr></hr>}
                     <h2>{candidateVereador?.numero && 'Candidato identificado'}</h2>
                     {candidateVereador?.nome}
@@ -128,6 +131,7 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Número do prefeito</h1>
                     {input}
+                    {!candidatePrefeito && input.length==2 && (candidatePrefeito === false ? <span>Candidato não encontrado.</span> : <LoadingWheel />)}
                     {candidatePrefeito?.numero && <hr></hr>}
                     <h2>{candidatePrefeito?.numero && 'Candidato identificado'}</h2>
                     {candidatePrefeito?.nome}
@@ -198,6 +202,7 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Processando voto...</h1>
                     <h3>Aguarde alguns instantes.</h3>
+                    <LoadingWheel />
                 </>));
                 break;
 
