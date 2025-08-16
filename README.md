@@ -14,10 +14,18 @@ Sistema desenvolvido para o projeto educativo "Estudantes de Atitude", simulando
 - Contabilização automática de resultados
 - Design responsivo e intuitivo
 
-## 🚀 Tecnologias
+## 🚀 Tecnologias Usadas
 
 - **Next.js** - Framework React
 - **React** - Interface de usuário
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
 
 ## 📦 Instalação e Uso
 
@@ -38,11 +46,3 @@ Sistema desenvolvido para o projeto educativo "Estudantes de Atitude", simulando
    ```
 
 4. Acesse `http://localhost:3000`
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
