@@ -44,7 +44,9 @@ export default async function handler(req, res) {
 
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(20);
-        doc.text('Relatório da Urna Nova DFM', 20, 30);
+        doc.text(`Relatório da Urna Nova DFM`, 20, 30);
+        doc.setFontSize(16);
+        doc.text(`${new Date().toLocaleString('pt-br')}`, 20, 40);
         
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(12);
