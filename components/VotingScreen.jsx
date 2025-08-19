@@ -163,7 +163,7 @@ export default function VotingScreen({
                         const response = await fetch('/api/post_vote', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prefeito: candidatePrefeito, vereador: candidateVereador, eleitor: voter?.matricula })
+                            body: JSON.stringify({ prefeito: candidatePrefeito?.numero, vereador: candidateVereador?.numero, eleitor: voter?.matricula })
                         });
 
                         const data = await response?.json().catch(err => {});
@@ -183,7 +183,7 @@ export default function VotingScreen({
                         const response = await fetch('/api/post_vote', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ prefeito: { nome: 'BRANCO', numero: 0 }, vereador: candidateVereador, eleitor: voter?.matricula })
+                            body: JSON.stringify({ prefeito: 0, vereador: candidateVereador?.numero, eleitor: voter?.matricula })
                         });
 
                         const data = await response?.json().catch(err => {});
