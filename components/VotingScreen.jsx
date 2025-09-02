@@ -89,7 +89,7 @@ export default function VotingScreen({
                 setInnerElements((<>
                     <h1>Número do vereador</h1>
                     {input}
-                    {!candidateVereador && input.length==4 && (candidateVereador === false ? <span>Candidato não encontrado.</span> : <LoadingWheel />)}
+                    {!candidateVereador && input.length==5 && (candidateVereador === false ? <span>Candidato não encontrado.</span> : <LoadingWheel />)}
                     {candidateVereador?.numero && <hr></hr>}
                     <h2>{candidateVereador?.numero && 'Candidato identificado'}</h2>
                     {candidateVereador?.nome}
@@ -98,7 +98,7 @@ export default function VotingScreen({
                     <h2>{candidateVereador?.numero && 'Confirme para votar'}</h2>
                 </>));
 
-                if(input.length==4 && !candidateVereador) {
+                if(input.length==5 && !candidateVereador) {
                     (async() => {
                         const response = await fetch('/api/get_candidate', {
                             method: 'POST',
