@@ -1,6 +1,7 @@
 import styles from "@/styles/components/VotingScreen.module.css";
 import { useEffect, useState } from "react";
 import LoadingWheel from "./LoadingWheel";
+import playSound from "@/src/playSound";
 
 const Steps = Object.freeze({
     APRESENTACAO: 1,
@@ -205,6 +206,7 @@ export default function VotingScreen({
                     <h3>Aguarde alguns instantes.</h3>
                     <LoadingWheel />
                 </>));
+                playSound("UrnaConfirm");
                 break;
 
             case Steps.FINALIZADO:
